@@ -56,10 +56,10 @@ public class NewPlayer : MonoBehaviour
     private void FixedUpdate() {
         if (inJump)
         {
-            movementInput.z = 200;
+            rb.AddForce(Vector3.up*60, ForceMode.VelocityChange);
             inJump = !inJump;
         }
-        rb.linearVelocity = new Vector3(movementInput.x*20, movementInput.z, movementInput.y*20);
+        rb.linearVelocity = new Vector3(movementInput.x*20, rb.linearVelocity.y, movementInput.y*20);
         Debug.Log(gr_script.PlayerTouchesGround);
     }
 }
