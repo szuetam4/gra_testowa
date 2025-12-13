@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 9edf8504b8bdfb623bc84be26166ef2a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - movement: {fileID: -2800096857839366005, guid: f089af1145a622569a61a3d45610c3c1, type: 3}
+  - pointerPosition: {fileID: -8820928277345520936, guid: f089af1145a622569a61a3d45610c3c1, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
