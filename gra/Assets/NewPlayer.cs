@@ -1,11 +1,16 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class NewPlayer : MonoBehaviour
 {
     private Vector3 pointerInput, movementInput;
 
     public Rigidbody rb;
+
+    public GameObject groundCollider;
+
+    private groundColliderScript gr_script;
 
     private bool isJumpPressed = false;
 
@@ -17,7 +22,9 @@ public class NewPlayer : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        groundCollider = GameObject.FindGameObjectWithTag("groundCollider");
         rb = GetComponent<Rigidbody>();
+        gr_script = groundCollider.GetComponent<groundColliderScript>();
     }
 
     // Update is called once per frame
@@ -34,10 +41,9 @@ public class NewPlayer : MonoBehaviour
             movementInput.z = 0;
         }
 
-        if (isJumpPressed)
+        if (isJumpPressed && gr_script.PlayerTouchesGround)
         {
             inJump = true;
-            Debug.Log(isJumpPressed);
         }
     }
 
@@ -54,5 +60,6 @@ public class NewPlayer : MonoBehaviour
             inJump = !inJump;
         }
         rb.linearVelocity = new Vector3(movementInput.x*20, movementInput.z, movementInput.y*20);
+        Debug.Log(gr_script.PlayerTouchesGround);
     }
 }
