@@ -18,16 +18,20 @@ public class NewPlayer : MonoBehaviour
 
     private groundColliderScript gr_script;
 
-    private bool isJumpPressed = false;
+    private bool isJumpPressed = false, canDash = true;
+
+    private float isDashPressed;
+
+    private bool doubleJump = false;
 
     private bool inJump = false;
 
-    private float speed;
+    private float speed, maxSpeed = 12;
 
     private float inputX, yRotation;
 
     [SerializeField]
-    private InputActionReference movement, pointerPosition;
+    private InputActionReference movement, pointerPosition, dash;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -45,6 +49,7 @@ public class NewPlayer : MonoBehaviour
         SpeedControl();
         speed = rb.linearVelocity.magnitude;
         isJumpPressed = Input.GetButtonDown("Jump");
+        isDashPressed = dash.action.ReadValue<float>();
 
         movementInput = movement.action.ReadValue<Vector2>();
 
@@ -55,7 +60,7 @@ public class NewPlayer : MonoBehaviour
 
         if (isJumpPressed && gr_script.PlayerTouchesGround)
         {
-            inJump = true;
+            Jump();
         }
         if (gr_script.PlayerTouchesGround)
         {
@@ -65,24 +70,52 @@ public class NewPlayer : MonoBehaviour
         {
             rb.linearDamping = 0;
         }
-        
+        if (!gr_script.PlayerTouchesGround && doubleJump && isJumpPressed)
+        {
+            DoubleJump();
+            doubleJump = false;
+        }
+        if (isDashPressed == 1 && canDash)
+        {
+            StartCoroutine(DashCoroutine());
+        }
+
+    }
+
+    private void Jump()
+    {
+        rb.AddForce(Vector3.up * 60, ForceMode.Impulse);
+        inJump = !inJump;
+        doubleJump = true;
+    }
+
+    private void DoubleJump()
+    {
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 40, rb.linearVelocity.z);
+    }
+    
+    IEnumerator DashCoroutine()
+    {
+        canDash = false;
+        maxSpeed = 100;
+        rb.AddForce(moveDirection.normalized * 250f, ForceMode.Impulse);
+        rb.AddForce(transform.up * 13f, ForceMode.Impulse);
+        yield return new WaitForSeconds(0.1f);
+        maxSpeed = 12;
+        yield return new WaitForSeconds(4.9f);
+        canDash = true;
+        Debug.Log("Can dash");
     }
 
     private void FixedUpdate()
     {
-        if (inJump)
-        {
-            rb.AddForce(Vector3.up * 60, ForceMode.Impulse);
-            inJump = !inJump;
-        }
         MovePlayer();
-        
     }
 
     private void MovePlayer()
     {
         moveDirection = orientation.forward * movementInput.y + orientation.right * movementInput.x;
-        Debug.Log(speed);
+        //Debug.Log(speed);
         rb.AddForce(moveDirection.normalized * 250f, ForceMode.Force);
     }
 
@@ -90,9 +123,9 @@ public class NewPlayer : MonoBehaviour
     {
         Vector3 flatVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
-        if (flatVelocity.magnitude > 12)
+        if (flatVelocity.magnitude > maxSpeed)
         {
-            Vector3 limitedVelocity = flatVelocity.normalized * 12;
+            Vector3 limitedVelocity = flatVelocity.normalized * maxSpeed;
             rb.linearVelocity = new Vector3(limitedVelocity.x, rb.linearVelocity.y, limitedVelocity.z);
         }
     }
