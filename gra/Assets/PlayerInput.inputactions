@@ -27,17 +27,6 @@
             ],
             "bindings": [
                 {
-                    "name": "",
-                    "id": "9a552980-fa89-4c5e-a72a-57156f54ef68",
-                    "path": "<Mouse>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "PointerPosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
                     "name": "WASD",
                     "id": "e3017ddf-8a3c-4912-8833-1debf035fd93",
                     "path": "2DVector",
@@ -91,6 +80,17 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "b82a88dc-69c1-44c5-b3c2-8c63919d7640",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PointerPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
