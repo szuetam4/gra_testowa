@@ -22,6 +22,8 @@ public class NewPlayer : MonoBehaviour
 
     private bool inJump = false;
 
+    private float speed;
+
     private float inputX, yRotation;
 
     [SerializeField]
@@ -30,7 +32,7 @@ public class NewPlayer : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = GameObject.FindGameObjectWithTag("SecondPlayer");
         groundCollider = GameObject.FindGameObjectWithTag("groundCollider");
         rb = GetComponent<Rigidbody>();
         gr_script = groundCollider.GetComponent<groundColliderScript>();
@@ -40,6 +42,8 @@ public class NewPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        SpeedControl();
+        speed = rb.linearVelocity.magnitude;
         isJumpPressed = Input.GetButtonDown("Jump");
 
         movementInput = movement.action.ReadValue<Vector2>();
@@ -53,23 +57,43 @@ public class NewPlayer : MonoBehaviour
         {
             inJump = true;
         }
+        if (gr_script.PlayerTouchesGround)
+        {
+            rb.linearDamping = 6;
+        }
+        else
+        {
+            rb.linearDamping = 0;
+        }
+        
     }
 
     private void FixedUpdate()
     {
         if (inJump)
         {
-            rb.AddForce(Vector3.up * 60, ForceMode.VelocityChange);
+            rb.AddForce(Vector3.up * 60, ForceMode.Impulse);
             inJump = !inJump;
         }
         MovePlayer();
-        //rb.linearVelocity = new Vector3(movementInput.x * 20, rb.linearVelocity.y, movementInput.y * 20);
+        
     }
 
     private void MovePlayer()
     {
         moveDirection = orientation.forward * movementInput.y + orientation.right * movementInput.x;
+        Debug.Log(speed);
+        rb.AddForce(moveDirection.normalized * 250f, ForceMode.Force);
+    }
 
-        rb.AddForce(moveDirection.normalized * 100f, ForceMode.Force);
+    private void SpeedControl()
+    {
+        Vector3 flatVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+        if (flatVelocity.magnitude > 12)
+        {
+            Vector3 limitedVelocity = flatVelocity.normalized * 12;
+            rb.linearVelocity = new Vector3(limitedVelocity.x, rb.linearVelocity.y, limitedVelocity.z);
+        }
     }
 }
