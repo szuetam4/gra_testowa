@@ -20,7 +20,7 @@ public class NewPlayer : MonoBehaviour
 
     private bool isJumpPressed = false, canDash = true;
 
-    private float isDashPressed;
+    private float isDashPressed, isLMBPressed;
 
     private bool doubleJump = false;
 
@@ -31,7 +31,7 @@ public class NewPlayer : MonoBehaviour
     private float inputX, yRotation;
 
     [SerializeField]
-    private InputActionReference movement, pointerPosition, dash;
+    private InputActionReference movement, pointerPosition, dash, LMB;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -50,6 +50,7 @@ public class NewPlayer : MonoBehaviour
         speed = rb.linearVelocity.magnitude;
         isJumpPressed = Input.GetButtonDown("Jump");
         isDashPressed = dash.action.ReadValue<float>();
+        isLMBPressed = LMB.action.ReadValue<float>();
 
         movementInput = movement.action.ReadValue<Vector2>();
 
@@ -79,7 +80,7 @@ public class NewPlayer : MonoBehaviour
         {
             StartCoroutine(DashCoroutine());
         }
-
+        Debug.Log(isLMBPressed);
     }
 
     private void Jump()
