@@ -18,7 +18,7 @@ public class NewPlayer : MonoBehaviour
 
     private groundColliderScript gr_script;
 
-    private bool isJumpPressed = false, canDash = true;
+    private bool isJumpPressed = false, canDash = true, canShoot = true;
 
     private float isDashPressed, isLMBPressed;
 
@@ -80,7 +80,10 @@ public class NewPlayer : MonoBehaviour
         {
             StartCoroutine(DashCoroutine());
         }
-        Debug.Log(isLMBPressed);
+        if (isLMBPressed == 1 && canShoot)
+        {
+            StartCoroutine(ShootCoroutine());
+        }
     }
 
     private void Jump()
@@ -94,7 +97,15 @@ public class NewPlayer : MonoBehaviour
     {
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 40, rb.linearVelocity.z);
     }
-    
+
+    IEnumerator ShootCoroutine()
+    {
+        Debug.Log("pif");
+        canShoot = false;
+        yield return new WaitForSeconds(1f);
+        canShoot = true;
+    }
+
     IEnumerator DashCoroutine()
     {
         canDash = false;
